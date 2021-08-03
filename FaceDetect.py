@@ -1,6 +1,4 @@
 import cv2
-import sys
-
 # Get user supplied values
 imagePath = "abba.png"
 cascPath = "haarcascade_frontalface_default.xml"
@@ -21,25 +19,23 @@ faces = faceCascade.detectMultiScale2(
     flags=cv2.CASCADE_SCALE_IMAGE
 )
 
-print("Found {0} faces!".format(len(faces[0])))
 
-print(faces[0])
-print(faces[1])
 
-print((faces[0][0][1]))
-
-print(len(faces[1]))
-
-# attepmting target priority:
+# attempting target priority:
 priority = []
+targets = []
 for i in range(0, len(faces[1])):
-    priority.append(faces[0][i][2] * faces[0][i][3] * faces[1][i][0])
+    if faces[1][i][0] > 75:
+        priority.append(faces[0][i][2] * faces[0][i][3] * faces[1][i][0])
+        targets.append(faces[0][i])
 
 for j in range(0, len(priority)):
-    print(f"Target priority: {priority[j]}")
+    print(f"Target priority: {priority[j]}, Target confidence: {faces[1][j][0]}")
+
+print(f"Found {len(targets)} targets!")
 
 # Draw a rectangle around the faces
-for (x, y, w, h) in faces[0]:
+for (x, y, w, h) in targets:
     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
 cv2.imshow("Faces found", image)
